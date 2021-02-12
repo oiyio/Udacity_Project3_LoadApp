@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
         loadingButton.setOnClickListener {
-            loadingButton.buttonState = ButtonState.Clicked
 
             when (radioGroup.checkedRadioButtonId) {
                 R.id.radioButtonGlide -> download(URL_GLIDE)
@@ -103,6 +102,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun download(url: String) {
+        loadingButton.buttonState = ButtonState.Loading
+
         val request =
             DownloadManager.Request(Uri.parse(url))
                 .setTitle(getString(R.string.app_name))

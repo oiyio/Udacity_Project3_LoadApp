@@ -49,7 +49,7 @@
         android:id="@+id/loadingButton"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        app:text="@string/download"
+        tools:text="@string/download"
         app:textColor="#000"
         android:layout_margin="30dp"
         app:backgroundColor="@color/colorPrimary"

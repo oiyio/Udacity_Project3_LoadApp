@@ -28,13 +28,21 @@ class LoadingButton @JvmOverloads constructor(
     private var paintText = Paint(Paint.ANTI_ALIAS_FLAG)
 
     var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
-
+        when(new){
+            ButtonState.Loading ->{
+                buttonText = context.getString(R.string.button_loading)
+                invalidate()
+            }
+            ButtonState.Completed ->{
+                buttonText = context.getString(R.string.download)
+                invalidate()
+            }
+        }
     }
 
 
     init {
         context.withStyledAttributes(attrs, R.styleable.LoadingButton) {
-            buttonText = getString(R.styleable.LoadingButton_text) ?: ""
             buttonTextColor = getInt(R.styleable.LoadingButton_textColor, 0)
             buttonBackgroundColor = getInt(R.styleable.LoadingButton_backgroundColor, 0)
         }
@@ -48,6 +56,8 @@ class LoadingButton @JvmOverloads constructor(
             textSize = context.resources.getDimension(R.dimen.default_text_size)
             /*textAlign = Paint.Align.CENTER*/
         }
+
+        buttonText = resources.getString(R.string.download)
     }
 
 

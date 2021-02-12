@@ -43,5 +43,6 @@ fun NotificationManager.sendNotification(context: Context, isSuccess: Boolean, t
             actionButtonPendingIntent
         ).setSmallIcon(R.drawable.ic_assistant_black_24dp)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
+
     notify(NOTIFICATION_ID, builder.build())
 }
