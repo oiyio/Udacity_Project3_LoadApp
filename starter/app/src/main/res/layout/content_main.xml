@@ -9,14 +9,52 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <com.udacity.LoadingButton
-        android:id="@+id/custom_button"
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="0dp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_between_radio_groups"
+        app:layout_constraintBottom_toTopOf="@+id/loadingButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radioButtonGlide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_between_radio_groups"
+            android:text="@string/glide"
+            android:textSize="@dimen/radioButtonTextSize" />
+
+        <RadioButton
+            android:id="@+id/radioButtonUdacity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_between_radio_groups"
+            android:text="@string/udacity"
+            android:textSize="@dimen/radioButtonTextSize" />
+
+        <RadioButton
+            android:id="@+id/radioButtonRetrofit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retrofit"
+            android:textSize="@dimen/radioButtonTextSize" />
+
+    </RadioGroup>
+
+    <com.udacity.LoadingButton
+        android:id="@+id/loadingButton"
+        android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_margin="20dp"
+        app:text="@string/download"
+        app:textColor="#000"
+        android:layout_margin="30dp"
+        app:backgroundColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
