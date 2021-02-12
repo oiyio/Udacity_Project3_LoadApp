@@ -45,7 +45,7 @@ class LoadingButton @JvmOverloads constructor(
                 }
 
                 valueAnimatorCircular = ValueAnimator.ofInt(0, 360).apply {
-                    duration  = 2000
+                    duration = 2000
                     addUpdateListener { valueAnimator ->
                         progressCircularAnimation = valueAnimator.animatedValue as Int
                         valueAnimator.repeatCount = ValueAnimator.INFINITE
@@ -92,9 +92,42 @@ class LoadingButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        paintBackground.color = ContextCompat.getColor(context, R.color.colorPrimary)
-        canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paintBackground)
+        drawInitialBackgroundColor(canvas)
 
+        drawRectangularAnimation(canvas)
+
+        drawButtonText(canvas)
+
+        drawCircularAnimation(canvas)
+    }
+
+    private fun drawCircularAnimation(canvas: Canvas) {
+        paintBackground.color = Color.YELLOW
+        canvas.drawArc(
+            rectCircularAnimationPosition,
+            0F,
+            progressCircularAnimation.toFloat(),
+            true,
+            paintBackground
+        )
+    }
+
+    private fun drawButtonText(canvas: Canvas) {
+        paintText.getTextBounds(
+            buttonText,
+            0,
+            buttonText.length,
+            rectButtonText
+        )  // calculates rectButtonText in this line.
+        canvas.drawText(
+            buttonText,
+            width / 2f - rectButtonText.centerX(),
+            height / 2f - rectButtonText.centerY(),
+            paintText
+        )
+    }
+
+    private fun drawRectangularAnimation(canvas: Canvas) {
         paintBackground.color = ContextCompat.getColor(context, R.color.colorPrimaryDark)
         canvas.drawRect(
             0f,
@@ -102,18 +135,11 @@ class LoadingButton @JvmOverloads constructor(
             widthSize.toFloat() * progressRectangularAnimation / 100,
             heightSize.toFloat(), paintBackground
         )
+    }
 
-        paintText.getTextBounds(buttonText, 0, buttonText.length, rectButtonText)  // calculates rectButtonText in this line.
-        canvas.drawText(
-            buttonText,
-            width / 2f - rectButtonText.centerX(),
-            height / 2f - rectButtonText.centerY(),
-            paintText
-        )
-
-        paintBackground.color= Color.YELLOW
-
-        canvas.drawArc(rectCircularAnimationPosition, 0F, progressCircularAnimation.toFloat(), true, paintBackground)
+    private fun drawInitialBackgroundColor(canvas: Canvas) {
+        paintBackground.color = ContextCompat.getColor(context, R.color.colorPrimary)
+        canvas.drawRect(0f, 0f, widthSize.toFloat(), heightSize.toFloat(), paintBackground)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -128,7 +154,12 @@ class LoadingButton @JvmOverloads constructor(
         heightSize = h
         setMeasuredDimension(w, h)
 
-        rectCircularAnimationPosition.set(widthSize - 200f, heightSize / 2 - 50f, widthSize.toFloat() - 100f, heightSize / 2 + 50f)
+        rectCircularAnimationPosition.set(
+            widthSize - 200f,
+            heightSize / 2 - 50f,
+            widthSize.toFloat() - 100f,
+            heightSize / 2 + 50f
+        )
     }
 
     fun setState(state: ButtonState) {
