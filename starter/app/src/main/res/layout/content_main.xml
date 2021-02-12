@@ -50,7 +50,7 @@
         android:layout_width="0dp"
         android:layout_height="60dp"
         tools:text="@string/download"
-        app:textColor="#000"
+        app:textColor="@color/white"
         android:layout_margin="30dp"
         app:backgroundColor="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
