@@ -13,6 +13,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.udacity.extension.sendNotification
@@ -38,9 +39,9 @@ class MainActivity : AppCompatActivity() {
         loadingButton.setOnClickListener {
 
             when (radioGroup.checkedRadioButtonId) {
-                R.id.radioButtonGlide -> download(URL_GLIDE)
-                R.id.radioButtonUdacity -> download(URL_UDACITY)
-                R.id.radioButtonRetrofit -> download(URL_RETROFIT)
+                R.id.radioButtonGlide -> download(URL_DOWNLOAD.GLIDE)
+                R.id.radioButtonUdacity -> download(URL_DOWNLOAD.UDACITY)
+                R.id.radioButtonRetrofit -> download(URL_DOWNLOAD.RETROFIT)
                 else -> Toast.makeText(
                     this,
                     resources.getString(R.string.please_make_selection),
@@ -86,14 +87,14 @@ class MainActivity : AppCompatActivity() {
                 val cursor: Cursor = downloadManager.query(query)
                 if (cursor.moveToFirst()) {
                     if (cursor.count > 0) {
-                        val downloadStatus =
-                            cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                        val downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                        val downloadDescription = cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_DESCRIPTION))
                         if (downloadStatus == DownloadManager.STATUS_SUCCESSFUL) {
                             loadingButton.setState(ButtonState.Completed)
-                            notificationManager.sendNotification(context!!, true, "Completed")
+                            notificationManager.sendNotification(context!!, true, downloadDescription)
                         } else {
                             loadingButton.setState(ButtonState.Completed)
-                            notificationManager.sendNotification(context!!, false, "Failed")
+                            notificationManager.sendNotification(context!!, false, downloadDescription)
                         }
                     }
                 }
@@ -101,13 +102,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun download(url: String) {
+    private fun download(urlDownload: URL_DOWNLOAD) {
         loadingButton.buttonState = ButtonState.Loading
 
         val request =
-            DownloadManager.Request(Uri.parse(url))
+            DownloadManager.Request(Uri.parse(urlDownload.url))
                 .setTitle(getString(R.string.app_name))
-                .setDescription(getString(R.string.app_description))
+                .setDescription(applicationContext.getString(urlDownload.urlTitle))
                 .setRequiresCharging(false)
                 .setAllowedOverMetered(true)
                 .setAllowedOverRoaming(true)
@@ -118,12 +119,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val URL_UDACITY =
-            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
-        private const val URL_GLIDE = "https://github.com/bumptech/glide"
-        private const val URL_RETROFIT = "https://github.com/square/retrofit"
 
         private var downloadID: Long = 0
     }
 
+}
+
+enum class URL_DOWNLOAD(val url: String, @StringRes val urlTitle: Int) {
+    UDACITY("https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip", R.string.udacity),
+    GLIDE("https://github.com/bumptech/glide/archive/master.zip", R.string.glide),
+    RETROFIT("https://github.com/square/retrofit/archive/master.zip", R.string.retrofit)
 }

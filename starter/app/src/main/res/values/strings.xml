@@ -20,4 +20,5 @@
     <string name="notification_channel_name_download">notification_channel_name_download</string>
     <string name="please_make_selection">Please make a selection for downloading</string>
     <string name="channel_description">Download File</string>
+    <string name="ok">OK</string>
 </resources>

@@ -35,8 +35,11 @@ class LoadingButton @JvmOverloads constructor(
         when (new) {
             ButtonState.Loading -> {
 
+                isEnabled = false
                 valueAnimatorRectangular = ValueAnimator.ofInt(0, widthSize).apply {
                     duration = 2500
+                    repeatCount = ValueAnimator.INFINITE
+                    repeatMode = ValueAnimator.RESTART
                     addUpdateListener { valueAnimator ->
                         progressRectangularAnimation = animatedValue as Int
                         invalidate()
@@ -45,7 +48,7 @@ class LoadingButton @JvmOverloads constructor(
                 }
 
                 valueAnimatorCircular = ValueAnimator.ofInt(0, 360).apply {
-                    duration = 2000
+                    duration = 2500
                     addUpdateListener { valueAnimator ->
                         progressCircularAnimation = valueAnimator.animatedValue as Int
                         valueAnimator.repeatCount = ValueAnimator.INFINITE
@@ -60,6 +63,7 @@ class LoadingButton @JvmOverloads constructor(
             ButtonState.Completed -> {
                 valueAnimatorRectangular.end()
                 valueAnimatorCircular.end()
+                isEnabled = true
                 buttonText = context.getString(R.string.download)
                 progressRectangularAnimation = 0
                 progressCircularAnimation = 0
