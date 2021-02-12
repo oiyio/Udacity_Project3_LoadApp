@@ -2,11 +2,8 @@ package com.udacity
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Rect
+import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
@@ -22,11 +19,14 @@ class LoadingButton @JvmOverloads constructor(
     private var buttonTextColor = 0
     private var buttonBackgroundColor = 0
 
-    private var rectText = Rect()
+    private var rectButtonText = Rect()
+    private var rectCircularAnimationPosition = RectF()
 
-    private var valueAnimator = ValueAnimator()
+    private var valueAnimatorRectangular = ValueAnimator()
+    private var valueAnimatorCircular = ValueAnimator()
 
-    private var progressWidth = 0
+    private var progressRectangularAnimation = 0
+    private var progressCircularAnimation = 0
 
     private var paintBackground = Paint(Paint.ANTI_ALIAS_FLAG)
     private var paintText = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -35,10 +35,20 @@ class LoadingButton @JvmOverloads constructor(
         when (new) {
             ButtonState.Loading -> {
 
-                valueAnimator = ValueAnimator.ofInt(0, widthSize).apply {
+                valueAnimatorRectangular = ValueAnimator.ofInt(0, widthSize).apply {
                     duration = 2500
                     addUpdateListener { valueAnimator ->
-                        progressWidth = animatedValue as Int
+                        progressRectangularAnimation = animatedValue as Int
+                        invalidate()
+                    }
+                    start()
+                }
+
+                valueAnimatorCircular = ValueAnimator.ofInt(0, 360).apply {
+                    duration  = 2000
+                    addUpdateListener { valueAnimator ->
+                        progressCircularAnimation = valueAnimator.animatedValue as Int
+                        valueAnimator.repeatCount = ValueAnimator.INFINITE
                         invalidate()
                     }
                     start()
@@ -48,9 +58,11 @@ class LoadingButton @JvmOverloads constructor(
                 invalidate()
             }
             ButtonState.Completed -> {
-                valueAnimator.end()
+                valueAnimatorRectangular.end()
+                valueAnimatorCircular.end()
                 buttonText = context.getString(R.string.download)
-                progressWidth = 0
+                progressRectangularAnimation = 0
+                progressCircularAnimation = 0
                 invalidate()
             }
         }
@@ -87,17 +99,21 @@ class LoadingButton @JvmOverloads constructor(
         canvas.drawRect(
             0f,
             0f,
-            widthSize.toFloat() * progressWidth / 100,
+            widthSize.toFloat() * progressRectangularAnimation / 100,
             heightSize.toFloat(), paintBackground
         )
 
-        paintText.getTextBounds(buttonText, 0, buttonText.length, rectText)
+        paintText.getTextBounds(buttonText, 0, buttonText.length, rectButtonText)  // calculates rectButtonText in this line.
         canvas.drawText(
             buttonText,
-            width / 2f - rectText.centerX(),
-            height / 2f - rectText.centerY(),
+            width / 2f - rectButtonText.centerX(),
+            height / 2f - rectButtonText.centerY(),
             paintText
         )
+
+        paintBackground.color= Color.YELLOW
+
+        canvas.drawArc(rectCircularAnimationPosition, 0F, progressCircularAnimation.toFloat(), true, paintBackground)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -111,6 +127,8 @@ class LoadingButton @JvmOverloads constructor(
         widthSize = w
         heightSize = h
         setMeasuredDimension(w, h)
+
+        rectCircularAnimationPosition.set(widthSize - 200f, heightSize / 2 - 50f, widthSize.toFloat() - 100f, heightSize / 2 + 50f)
     }
 
     fun setState(state: ButtonState) {
